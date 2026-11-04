@@ -46,3 +46,6 @@ cdk.out/
 crash.log
 *.tfvars
 !*.example.tfvars
+
+*.tfvars.json
+!*.example.tfvars.json

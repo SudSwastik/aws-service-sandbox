@@ -4,23 +4,34 @@ A workspace for experimenting with Amazon API Gateway, AWS Lambda, and
 integrations with other AWS services.
 
 Use this repository to build small test setups, explore service behavior, and
-verify integrations. No runtime, framework, or infrastructure tool has been
-selected yet.
+verify integrations. Each project chooses the runtime and infrastructure tools
+appropriate to its integration.
 
-## Experiment layout
+## Project layout
 
-Keep each experiment in its own directory, with the code, infrastructure, and
-instructions needed to reproduce it. For example:
+Keep each integration in its own directory at the repository root. Within a
+project, group files by service and keep deployment configuration together:
 
 ```text
-api-gateway-lambda/
+api-gateway-lambda-passthrough/
   README.md
-  src/
-  infra/
-  tests/
+  lambda/
+    lambda_function.py
+  api-gateway/
+    openapi.yaml
+  terraform/
+    README.md
+    main.tf
+    variables.tf
+    outputs.tf
+    versions.tf
+    terraform.example.tfvars
 ```
 
-This is a suggested layout; experiment directories have not been created yet.
+The [API Gateway and Lambda project](api-gateway-lambda-passthrough/README.md)
+includes a stateless mock API and a
+[Terraform deployment walkthrough](api-gateway-lambda-passthrough/terraform/README.md).
+Use the same grouping for future projects, adding service folders as needed.
 
 ## Getting started
 

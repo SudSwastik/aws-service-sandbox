@@ -1,0 +1,78 @@
+---
+openapi: 3.0.1
+info:
+  title: API Gateway Lambda Passthrough Mock
+  version: 1.0.0
+  description: Stateless Lambda mock API. Replace YOUR_REGION, YOUR_ACCOUNT_ID, and
+    YOUR_FUNCTION_NAME before importing as an HTTP API.
+paths:
+  "/items":
+    get:
+      operationId: getItems
+      responses:
+        '200':
+          description: Mock response
+        '400':
+          description: Invalid JSON request body
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:YOUR_REGION:lambda:path/2015-03-31/functions/arn:aws:lambda:YOUR_REGION:YOUR_ACCOUNT_ID:function:YOUR_FUNCTION_NAME/invocations
+        payloadFormatVersion: '2.0'
+    post:
+      operationId: createItem
+      responses:
+        '201':
+          description: Mock response
+        '400':
+          description: Invalid JSON request body
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:YOUR_REGION:lambda:path/2015-03-31/functions/arn:aws:lambda:YOUR_REGION:YOUR_ACCOUNT_ID:function:YOUR_FUNCTION_NAME/invocations
+        payloadFormatVersion: '2.0'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+  "/items/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    put:
+      operationId: updateItem
+      responses:
+        '200':
+          description: Mock response
+        '400':
+          description: Invalid JSON request body
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:YOUR_REGION:lambda:path/2015-03-31/functions/arn:aws:lambda:YOUR_REGION:YOUR_ACCOUNT_ID:function:YOUR_FUNCTION_NAME/invocations
+        payloadFormatVersion: '2.0'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+    delete:
+      operationId: deleteItem
+      responses:
+        '200':
+          description: Mock response
+        '400':
+          description: Invalid JSON request body
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:YOUR_REGION:lambda:path/2015-03-31/functions/arn:aws:lambda:YOUR_REGION:YOUR_ACCOUNT_ID:function:YOUR_FUNCTION_NAME/invocations
+        payloadFormatVersion: '2.0'
