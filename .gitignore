@@ -1,0 +1,48 @@
+# Local agent instructions and CodeGraph index
+AGENTS.md
+.codegraph/
+
+# Credentials and local environment configuration
+.aws/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# OS and editor files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Logs and temporary files
+*.log
+tmp/
+.cache/
+
+# Node.js and Python
+node_modules/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+coverage/
+.coverage
+
+# Build and AWS deployment artifacts
+dist/
+build/
+.aws-sam/
+.serverless/
+cdk.out/
+
+# Terraform local state and working files
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+*.tfvars
+!*.example.tfvars
