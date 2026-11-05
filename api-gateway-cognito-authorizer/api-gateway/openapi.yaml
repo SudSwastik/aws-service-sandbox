@@ -1,0 +1,91 @@
+---
+openapi: 3.0.1
+info:
+  title: Items Cognito API
+  version: 1.0.0
+  description: REST API protected by Cognito-issued ID tokens.
+security:
+- CognitoAuthorizer: []
+paths:
+  "/items":
+    get:
+      operationId: getItems
+      responses:
+        '200':
+          description: Mock response
+        '401':
+          description: Missing, invalid, or expired Cognito ID token
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: YOUR_BACKEND_INVOKE_ARN
+    post:
+      operationId: createItem
+      responses:
+        '201':
+          description: Mock response
+        '401':
+          description: Missing, invalid, or expired Cognito ID token
+        '400':
+          description: Invalid JSON object body
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: YOUR_BACKEND_INVOKE_ARN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+  "/items/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    put:
+      operationId: updateItem
+      responses:
+        '200':
+          description: Mock response
+        '401':
+          description: Missing, invalid, or expired Cognito ID token
+        '400':
+          description: Invalid JSON object body
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: YOUR_BACKEND_INVOKE_ARN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+    delete:
+      operationId: deleteItem
+      responses:
+        '200':
+          description: Mock response
+        '401':
+          description: Missing, invalid, or expired Cognito ID token
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: YOUR_BACKEND_INVOKE_ARN
+components:
+  securitySchemes:
+    CognitoAuthorizer:
+      type: apiKey
+      name: Authorization
+      in: header
+      x-amazon-apigateway-authtype: cognito_user_pools
+      x-amazon-apigateway-authorizer:
+        type: cognito_user_pools
+        providerARNs:
+        - YOUR_USER_POOL_ARN
+        identityValidationExpression: "^YOUR_CLIENT_ID$"
