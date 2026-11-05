@@ -1,0 +1,91 @@
+---
+openapi: 3.0.1
+info:
+  title: Items REST API
+  version: 1.0.0
+  description: Stateless items API protected by a Lambda TOKEN authorizer.
+security:
+- BearerAuthorizer: []
+paths:
+  "/items":
+    get:
+      operationId: getItems
+      responses:
+        '200':
+          description: Mock response
+        '401':
+          description: Missing or invalid bearer token
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: YOUR_BACKEND_INVOKE_ARN
+    post:
+      operationId: createItem
+      responses:
+        '201':
+          description: Mock response
+        '401':
+          description: Missing or invalid bearer token
+        '400':
+          description: Invalid JSON object body
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: YOUR_BACKEND_INVOKE_ARN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+  "/items/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    put:
+      operationId: updateItem
+      responses:
+        '200':
+          description: Mock response
+        '401':
+          description: Missing or invalid bearer token
+        '400':
+          description: Invalid JSON object body
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: YOUR_BACKEND_INVOKE_ARN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+    delete:
+      operationId: deleteItem
+      responses:
+        '200':
+          description: Mock response
+        '401':
+          description: Missing or invalid bearer token
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: YOUR_BACKEND_INVOKE_ARN
+components:
+  securitySchemes:
+    BearerAuthorizer:
+      type: apiKey
+      name: Authorization
+      in: header
+      x-amazon-apigateway-authtype: custom
+      x-amazon-apigateway-authorizer:
+        type: token
+        authorizerUri: YOUR_AUTHORIZER_INVOKE_ARN
+        identitySource: method.request.header.Authorization
+        authorizerResultTtlInSeconds: 0
