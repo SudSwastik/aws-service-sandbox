@@ -1,0 +1,904 @@
+# API Gateway REST API. Terraform replaces only the Lambda invocation ARN.
+"openapi": "3.0.1"
+"info":
+  "title": "request-response-api"
+  "version": "1.0.0"
+"x-amazon-apigateway-api-key-source": "HEADER"
+"x-amazon-apigateway-request-validators":
+  "body-and-parameters":
+    "validateRequestBody": true
+    "validateRequestParameters": true
+"x-amazon-apigateway-gateway-responses":
+  "INVALID_API_KEY":
+    "statusCode": "403"
+    "responseParameters":
+      "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+    "responseTemplates":
+      "application/json": "{\"error\": \"INVALID_API_KEY\"}"
+  "THROTTLED":
+    "statusCode": "429"
+    "responseParameters":
+      "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+    "responseTemplates":
+      "application/json": "{\"error\": \"THROTTLED\"}"
+  "QUOTA_EXCEEDED":
+    "statusCode": "429"
+    "responseParameters":
+      "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+    "responseTemplates":
+      "application/json": "{\"error\": \"QUOTA_EXCEEDED\"}"
+  "BAD_REQUEST_BODY":
+    "statusCode": "400"
+    "responseParameters":
+      "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+    "responseTemplates":
+      "application/json": "{\"error\": \"BAD_REQUEST_BODY\"}"
+  "BAD_REQUEST_PARAMETERS":
+    "statusCode": "400"
+    "responseParameters":
+      "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+    "responseTemplates":
+      "application/json": "{\"error\": \"BAD_REQUEST_PARAMETERS\"}"
+"paths":
+  "/health":
+    "get":
+      "security": []
+      "responses":
+        "200":
+          "description": "Health"
+      "x-amazon-apigateway-integration":
+        "type": "mock"
+        "requestTemplates":
+          "application/json": "{\"statusCode\":200}"
+        "responses":
+          "default":
+            "statusCode": "200"
+            "responseTemplates":
+              "application/json": "{\"status\":\"ok\"}"
+    "options":
+      "security": []
+      "responses":
+        "200":
+          "description": "CORS preflight"
+          "headers":
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Methods":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Headers":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-integration":
+        "type": "mock"
+        "requestTemplates":
+          "application/json": "{\"statusCode\":200}"
+        "responses":
+          "default":
+            "statusCode": "200"
+            "responseParameters":
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'"
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Api-Key,X-Client-Name,X-Trace-Id'"
+            "responseTemplates":
+              "application/json": "{}"
+  "/inspect":
+    "get":
+      "security":
+        - "ApiKey": []
+      "parameters": []
+      "responses":
+        "200":
+          "description": "HTTP 200"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-integration":
+        "type": "aws_proxy"
+        "httpMethod": "POST"
+        "uri": "YOUR_BACKEND_INVOKE_ARN"
+    "post":
+      "security":
+        - "ApiKey": []
+      "parameters": []
+      "responses":
+        "200":
+          "description": "HTTP 200"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-integration":
+        "type": "aws_proxy"
+        "httpMethod": "POST"
+        "uri": "YOUR_BACKEND_INVOKE_ARN"
+    "options":
+      "security": []
+      "responses":
+        "200":
+          "description": "CORS preflight"
+          "headers":
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Methods":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Headers":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-integration":
+        "type": "mock"
+        "requestTemplates":
+          "application/json": "{\"statusCode\":200}"
+        "responses":
+          "default":
+            "statusCode": "200"
+            "responseParameters":
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'"
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Api-Key,X-Client-Name,X-Trace-Id'"
+            "responseTemplates":
+              "application/json": "{}"
+  "/orders":
+    "post":
+      "security":
+        - "ApiKey": []
+      "parameters":
+        -
+          "name": "x-client-name"
+          "in": "header"
+          "required": true
+          "schema":
+            "type": "string"
+        -
+          "name": "currency"
+          "in": "query"
+          "schema":
+            "type": "string"
+        -
+          "name": "reject"
+          "in": "query"
+          "schema":
+            "type": "string"
+            "enum":
+              - "true"
+              - "false"
+      "responses":
+        "200":
+          "description": "HTTP 200"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "201":
+          "description": "HTTP 201"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "400":
+          "description": "HTTP 400"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "415":
+          "description": "HTTP 415"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "422":
+          "description": "HTTP 422"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-request-validator": "body-and-parameters"
+      "x-amazon-apigateway-integration":
+        "type": "aws"
+        "httpMethod": "POST"
+        "uri": "YOUR_BACKEND_INVOKE_ARN"
+        "passthroughBehavior": "never"
+        "requestTemplates":
+          "application/json": |
+            #set($currency = $input.params('currency'))
+            #if(!$currency || $currency == "")
+            #set($currency = "usd")
+            #end
+            {
+              "integration": "mapped",
+              "method": "$context.httpMethod",
+              "route": "$context.resourcePath",
+              "requestId": "$context.requestId",
+              "path": {"orderId": "$util.escapeJavaScript($input.params('orderId')).replaceAll("\\'","'")"},
+              "headers": {
+                "clientName": "$util.escapeJavaScript($input.params('x-client-name')).replaceAll("\\'","'")",
+                "gatewayAdded": "rest-api"
+              },
+              "query": {
+                "currency": "$util.escapeJavaScript($currency.toUpperCase()).replaceAll("\\'","'")",
+                "reject": "$util.escapeJavaScript($input.params('reject')).replaceAll("\\'","'")"
+              },
+              "body": {
+                "source": "api-gateway",
+                "payload": $input.json('$')
+              }
+            }
+        "responses":
+          "default":
+            "statusCode": "200"
+            "responseParameters":
+              "method.response.header.X-Response-Source": "'api-gateway-mapping'"
+              "method.response.header.X-Backend-Version": "integration.response.body.backendVersion"
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            "responseTemplates":
+              "application/json": |
+                #set($root = $input.path('$'))
+                #set($context.responseOverride.status = $root.httpStatus)
+                {
+                  "gatewayTransformed": true,
+                  "result": "$root.result",
+                  "requestId": "$context.requestId",
+                  "data": $input.json('$.received')
+                }
+      "requestBody":
+        "required": true
+        "content":
+          "application/json":
+            "schema":
+              "$ref": "#/components/schemas/OrderInput"
+    "options":
+      "security": []
+      "responses":
+        "200":
+          "description": "CORS preflight"
+          "headers":
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Methods":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Headers":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-integration":
+        "type": "mock"
+        "requestTemplates":
+          "application/json": "{\"statusCode\":200}"
+        "responses":
+          "default":
+            "statusCode": "200"
+            "responseParameters":
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'"
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Api-Key,X-Client-Name,X-Trace-Id'"
+            "responseTemplates":
+              "application/json": "{}"
+  "/orders/{orderId}":
+    "get":
+      "security":
+        - "ApiKey": []
+      "parameters":
+        -
+          "name": "x-client-name"
+          "in": "header"
+          "required": true
+          "schema":
+            "type": "string"
+        -
+          "name": "currency"
+          "in": "query"
+          "schema":
+            "type": "string"
+        -
+          "name": "reject"
+          "in": "query"
+          "schema":
+            "type": "string"
+            "enum":
+              - "true"
+              - "false"
+        -
+          "name": "orderId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "responses":
+        "200":
+          "description": "HTTP 200"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "201":
+          "description": "HTTP 201"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "400":
+          "description": "HTTP 400"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "415":
+          "description": "HTTP 415"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "422":
+          "description": "HTTP 422"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-request-validator": "body-and-parameters"
+      "x-amazon-apigateway-integration":
+        "type": "aws"
+        "httpMethod": "POST"
+        "uri": "YOUR_BACKEND_INVOKE_ARN"
+        "passthroughBehavior": "never"
+        "requestTemplates":
+          "application/json": |
+            #set($currency = $input.params('currency'))
+            #if(!$currency || $currency == "")
+            #set($currency = "usd")
+            #end
+            {
+              "integration": "mapped",
+              "method": "$context.httpMethod",
+              "route": "$context.resourcePath",
+              "requestId": "$context.requestId",
+              "path": {"orderId": "$util.escapeJavaScript($input.params('orderId')).replaceAll("\\'","'")"},
+              "headers": {
+                "clientName": "$util.escapeJavaScript($input.params('x-client-name')).replaceAll("\\'","'")",
+                "gatewayAdded": "rest-api"
+              },
+              "query": {
+                "currency": "$util.escapeJavaScript($currency.toUpperCase()).replaceAll("\\'","'")",
+                "reject": "$util.escapeJavaScript($input.params('reject')).replaceAll("\\'","'")"
+              },
+              "body": {
+                "source": "api-gateway",
+                "payload": {}
+              }
+            }
+        "responses":
+          "default":
+            "statusCode": "200"
+            "responseParameters":
+              "method.response.header.X-Response-Source": "'api-gateway-mapping'"
+              "method.response.header.X-Backend-Version": "integration.response.body.backendVersion"
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            "responseTemplates":
+              "application/json": |
+                #set($root = $input.path('$'))
+                #set($context.responseOverride.status = $root.httpStatus)
+                {
+                  "gatewayTransformed": true,
+                  "result": "$root.result",
+                  "requestId": "$context.requestId",
+                  "data": $input.json('$.received')
+                }
+    "put":
+      "security":
+        - "ApiKey": []
+      "parameters":
+        -
+          "name": "x-client-name"
+          "in": "header"
+          "required": true
+          "schema":
+            "type": "string"
+        -
+          "name": "currency"
+          "in": "query"
+          "schema":
+            "type": "string"
+        -
+          "name": "reject"
+          "in": "query"
+          "schema":
+            "type": "string"
+            "enum":
+              - "true"
+              - "false"
+        -
+          "name": "orderId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "responses":
+        "200":
+          "description": "HTTP 200"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "201":
+          "description": "HTTP 201"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "400":
+          "description": "HTTP 400"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "415":
+          "description": "HTTP 415"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "422":
+          "description": "HTTP 422"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-request-validator": "body-and-parameters"
+      "x-amazon-apigateway-integration":
+        "type": "aws"
+        "httpMethod": "POST"
+        "uri": "YOUR_BACKEND_INVOKE_ARN"
+        "passthroughBehavior": "never"
+        "requestTemplates":
+          "application/json": |
+            #set($currency = $input.params('currency'))
+            #if(!$currency || $currency == "")
+            #set($currency = "usd")
+            #end
+            {
+              "integration": "mapped",
+              "method": "$context.httpMethod",
+              "route": "$context.resourcePath",
+              "requestId": "$context.requestId",
+              "path": {"orderId": "$util.escapeJavaScript($input.params('orderId')).replaceAll("\\'","'")"},
+              "headers": {
+                "clientName": "$util.escapeJavaScript($input.params('x-client-name')).replaceAll("\\'","'")",
+                "gatewayAdded": "rest-api"
+              },
+              "query": {
+                "currency": "$util.escapeJavaScript($currency.toUpperCase()).replaceAll("\\'","'")",
+                "reject": "$util.escapeJavaScript($input.params('reject')).replaceAll("\\'","'")"
+              },
+              "body": {
+                "source": "api-gateway",
+                "payload": $input.json('$')
+              }
+            }
+        "responses":
+          "default":
+            "statusCode": "200"
+            "responseParameters":
+              "method.response.header.X-Response-Source": "'api-gateway-mapping'"
+              "method.response.header.X-Backend-Version": "integration.response.body.backendVersion"
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            "responseTemplates":
+              "application/json": |
+                #set($root = $input.path('$'))
+                #set($context.responseOverride.status = $root.httpStatus)
+                {
+                  "gatewayTransformed": true,
+                  "result": "$root.result",
+                  "requestId": "$context.requestId",
+                  "data": $input.json('$.received')
+                }
+      "requestBody":
+        "required": true
+        "content":
+          "application/json":
+            "schema":
+              "$ref": "#/components/schemas/OrderInput"
+    "delete":
+      "security":
+        - "ApiKey": []
+      "parameters":
+        -
+          "name": "x-client-name"
+          "in": "header"
+          "required": true
+          "schema":
+            "type": "string"
+        -
+          "name": "currency"
+          "in": "query"
+          "schema":
+            "type": "string"
+        -
+          "name": "reject"
+          "in": "query"
+          "schema":
+            "type": "string"
+            "enum":
+              - "true"
+              - "false"
+        -
+          "name": "orderId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "responses":
+        "200":
+          "description": "HTTP 200"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "201":
+          "description": "HTTP 201"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "400":
+          "description": "HTTP 400"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "415":
+          "description": "HTTP 415"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+        "422":
+          "description": "HTTP 422"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-request-validator": "body-and-parameters"
+      "x-amazon-apigateway-integration":
+        "type": "aws"
+        "httpMethod": "POST"
+        "uri": "YOUR_BACKEND_INVOKE_ARN"
+        "passthroughBehavior": "never"
+        "requestTemplates":
+          "application/json": |
+            #set($currency = $input.params('currency'))
+            #if(!$currency || $currency == "")
+            #set($currency = "usd")
+            #end
+            {
+              "integration": "mapped",
+              "method": "$context.httpMethod",
+              "route": "$context.resourcePath",
+              "requestId": "$context.requestId",
+              "path": {"orderId": "$util.escapeJavaScript($input.params('orderId')).replaceAll("\\'","'")"},
+              "headers": {
+                "clientName": "$util.escapeJavaScript($input.params('x-client-name')).replaceAll("\\'","'")",
+                "gatewayAdded": "rest-api"
+              },
+              "query": {
+                "currency": "$util.escapeJavaScript($currency.toUpperCase()).replaceAll("\\'","'")",
+                "reject": "$util.escapeJavaScript($input.params('reject')).replaceAll("\\'","'")"
+              },
+              "body": {
+                "source": "api-gateway",
+                "payload": {}
+              }
+            }
+        "responses":
+          "default":
+            "statusCode": "200"
+            "responseParameters":
+              "method.response.header.X-Response-Source": "'api-gateway-mapping'"
+              "method.response.header.X-Backend-Version": "integration.response.body.backendVersion"
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            "responseTemplates":
+              "application/json": |
+                #set($root = $input.path('$'))
+                #set($context.responseOverride.status = $root.httpStatus)
+                {
+                  "gatewayTransformed": true,
+                  "result": "$root.result",
+                  "requestId": "$context.requestId",
+                  "data": $input.json('$.received')
+                }
+    "options":
+      "security": []
+      "responses":
+        "200":
+          "description": "CORS preflight"
+          "headers":
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Methods":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Headers":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-integration":
+        "type": "mock"
+        "requestTemplates":
+          "application/json": "{\"statusCode\":200}"
+        "responses":
+          "default":
+            "statusCode": "200"
+            "responseParameters":
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'"
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Api-Key,X-Client-Name,X-Trace-Id'"
+            "responseTemplates":
+              "application/json": "{}"
+  "/files/{proxy+}":
+    "x-amazon-apigateway-any-method":
+      "security":
+        - "ApiKey": []
+      "parameters":
+        -
+          "name": "proxy"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "responses":
+        "200":
+          "description": "HTTP 200"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-integration":
+        "type": "aws_proxy"
+        "httpMethod": "POST"
+        "uri": "YOUR_BACKEND_INVOKE_ARN"
+    "options":
+      "security": []
+      "responses":
+        "200":
+          "description": "CORS preflight"
+          "headers":
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Methods":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Headers":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-integration":
+        "type": "mock"
+        "requestTemplates":
+          "application/json": "{\"statusCode\":200}"
+        "responses":
+          "default":
+            "statusCode": "200"
+            "responseParameters":
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'"
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Api-Key,X-Client-Name,X-Trace-Id'"
+            "responseTemplates":
+              "application/json": "{}"
+  "/status/{code}":
+    "get":
+      "security":
+        - "ApiKey": []
+      "parameters":
+        -
+          "name": "code"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "responses":
+        "200":
+          "description": "HTTP 200"
+          "headers":
+            "X-Response-Source":
+              "schema":
+                "type": "string"
+            "X-Backend-Version":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-integration":
+        "type": "aws_proxy"
+        "httpMethod": "POST"
+        "uri": "YOUR_BACKEND_INVOKE_ARN"
+    "options":
+      "security": []
+      "responses":
+        "200":
+          "description": "CORS preflight"
+          "headers":
+            "Access-Control-Allow-Origin":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Methods":
+              "schema":
+                "type": "string"
+            "Access-Control-Allow-Headers":
+              "schema":
+                "type": "string"
+      "x-amazon-apigateway-integration":
+        "type": "mock"
+        "requestTemplates":
+          "application/json": "{\"statusCode\":200}"
+        "responses":
+          "default":
+            "statusCode": "200"
+            "responseParameters":
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'"
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Api-Key,X-Client-Name,X-Trace-Id'"
+            "responseTemplates":
+              "application/json": "{}"
+"components":
+  "securitySchemes":
+    "ApiKey":
+      "type": "apiKey"
+      "name": "x-api-key"
+      "in": "header"
+  "schemas":
+    "OrderInput":
+      "type": "object"
+      "required":
+        - "name"
+        - "quantity"
+      "additionalProperties": false
+      "properties":
+        "name":
+          "type": "string"
+          "minLength": 1
+        "quantity":
+          "type": "integer"
+          "minimum": 1
